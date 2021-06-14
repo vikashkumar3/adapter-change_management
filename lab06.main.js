@@ -94,7 +94,7 @@ class ServiceNowAdapter extends EventEmitter {
  *   that handles the response.
  */
 healthcheck(callback) {
- this.postRecord((result, error) => {
+ this.getRecord((result, error) => {
    /**
     * For this lab, complete the if else conditional
     * statements that check if an error exists
@@ -117,7 +117,7 @@ healthcheck(callback) {
         this.emitOffline();
         log.error(`\nError returned HealthCheck Adapter ID: ${this.id}`);
         log.error(`\nError returned HealthCheck Detail :\n${JSON.stringify(error)}`);
-        return () => callback(result, error);
+        callBack(result, error);
 
    } else {
      /**
@@ -130,10 +130,9 @@ healthcheck(callback) {
       * parameter as an argument for the callback function's
       * responseData parameter.
       */
-        //console.log(`Final result ${JSON.stringify(result)}`);
         this.emitOnline();
         log.debug(`\Success returned HealthCheck Adapter ID: ${this.id}`);
-        return () => callback(result, error);
+        callBack(result, error);
    }
  });
 
@@ -196,28 +195,9 @@ healthcheck(callback) {
 
     this.connector.get((data, error) => {
         if (error) {
-            console.error(`\nError returned from GET request:\n${JSON.stringify(error)}`);
-        } else{
-            if(data && data.body){
-                let body = JSON.parse(data.body);
-                let results = body.result;
-                let response = [];
-
-                for(let i=0; i <results.length; i++){
-                    let result = {};
-                    result.change_ticket_number = results[i].number;
-                    result.active = results[i].active;
-                    result.priority = results[i].priority;
-                    result.description = results[i].description;
-                    result.work_start = results[i].work_start;
-                    result.work_end = results[i].work_end;
-                    result.change_ticket_key = results[i].sys_id;
-                    response.push(result);
-                }
-                //console.log(`${JSON.stringify(response)}`);
-                return callback(response, error);
-            }
-        }        
+        console.error(`\nError returned from GET request:\n${JSON.stringify(error)}`);
+        }
+        console.log(`\nResponse returned from GET request:\n${JSON.stringify(data)}`)
     });
 
   }
@@ -242,22 +222,8 @@ healthcheck(callback) {
     this.connector.post((data, error) => {
         if (error) {
         console.error(`\nError returned from POST request:\n${JSON.stringify(error)}`);
-        } else
-            { 
-                if(data && data.body){
-                    let body = JSON.parse(data.body);
-                    let result = body.result;
-                    let response = {};
-                    response.change_ticket_number = result.number;
-                    response.active = result.active;
-                    response.priority = result.priority;
-                    response.description = result.description;
-                    response.work_start = result.work_start;
-                    response.work_end = result.work_end;
-                    response.change_ticket_key = result.sys_id;
-                    return callback(response, error);
-                }   
-            }
+        }
+        console.log(`\nResponse returned from POST request:\n${JSON.stringify(data)}`)
     });
   }
 }
