@@ -115,7 +115,8 @@ healthcheck(callback) {
       * for the callback's errorMessage parameter.
       */
         this.emitOffline();
-        log.error('Adapter ID:' + this.id + ' Health Check Error:' + error);
+        log.error(`\nError returned HealthCheck Adapter ID: ${this.id}`);
+        log.error(`\nError returned HealthCheck Detail :\n${JSON.stringify(error)}`);
         callBack(result, error);
 
    } else {
@@ -130,10 +131,12 @@ healthcheck(callback) {
       * responseData parameter.
       */
         this.emitOnline();
-        log.debug('Adapter ID:' + this.id + ' Health Check Success');
+        log.debug(`\Success returned HealthCheck Adapter ID: ${this.id}`);
         callBack(result, error);
    }
  });
+
+ this.emitOnline();
 }
 
   /**
